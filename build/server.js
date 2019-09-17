@@ -13,6 +13,7 @@ const apiDeletePost_1 = require("./api/posts/apiDeletePost");
 const apiUpdatePost_1 = require("./api/posts/apiUpdatePost");
 const apiUploadImage_1 = require("./api/posts/apiUploadImage");
 const errorHandling_1 = require("./api/general/errorHandling");
+const dateParam_1 = require("./api/general/reqParams/dateParam");
 const app = express_1.default();
 app.use(body_parser_1.default.urlencoded({ extended: false }));
 app.use(body_parser_1.default.json());
@@ -49,6 +50,44 @@ app.put('/posts/:id', apiUpdatePost_1.apiUpdatePost);
 app.post('/posts/:id/img', apiUploadImage_1.apiUploadImage);
 //处理错误信息
 app.use(errorHandling_1.apiErrorHandler);
+/*
+GET: req.method
+http: req.protocol
+lhost: req.hostname
+port: envirment
+posts/id2/todos: req.originalURL
+id2: req.params = {postID: id2}
+?star=5: req.query={star: 5}
+req.app
+req.body
+req.headers
+res.secure, req.cookies, req.fresh...
+*/
+// app.use((req, res, next) => {
+//     if(req.accepts('application/json')) {
+//         next();
+//     }else {
+//         next(
+//             new APIError(
+//                 'Content Type Not supported',
+//                 'This API only supports application/json',
+//                 400
+//             )
+//         );
+//     }
+// });
+// app.get('/headers', (req, res, next) => res.json(req.headers));
+// const dateFormat = '\\d{4}-\\d{1,2}-\\d{1,2}';
+// app.get(
+//     `/booking/:fromDate(${dateFormat})/:toDate(${dateFormat})`,
+//     (req, res, next) => {
+//     res.json(req.params);
+// });
+app.get(`/booking/:fromDate/:toDate`, (req, res, next) => {
+    res.json(req.params);
+});
+app.param('fromDate', dateParam_1.dateParam);
+app.param('toDate', dateParam_1.dateParam);
 app.listen(process.env.PORT || 8091, () => {
     console.log("Server started...");
 });
